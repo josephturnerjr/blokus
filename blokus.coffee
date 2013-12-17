@@ -52,9 +52,26 @@ class Game
   constructor: (nr_players, board_size) ->
     @board_size = board_size
     @nr_players = nr_players
-    @current_turn = 0
+    @current_turn = 1
     @board = make_board(board_size, board_size)
-    @players = (Player(p) for p in [0...nr_players])
+    @players = (Player(p + 1) for p in [0...nr_players])
+
+  make_move: (player_index, piece, rotation, top, left) ->
+    # Check that it is the player's turn
+    if @current_turn == player_index
+      player = @players[player_index - 1]
+      # Check that player has piece available
+      # Check that it is a valid move
+      if is_valid_move(player_index, piece, rotation, top, left, @board, player.first_move())
+        for i in [0...5]
+          for j in [0...5]
+            if rotated[i][j] != 0
+              board[top + i][left + j] == rotated[i][j]
+        # Increment player moves
+        player.add_move()
+        # Increment turn counter
+        @current_turn = (@current_turn) % 4 + 1
+    return false
 
 is_valid_move= (player_index, piece, rotation, top, left, board, is_first_move=false) ->
   rotated = rotate_piece(piece, rotation)
@@ -69,20 +86,19 @@ is_valid_move= (player_index, piece, rotation, top, left, board, is_first_move=f
   if is_first_move
     # Piece must be in player corner
     #  Corners are numbered thusly:
-    #   [0 2]
-    #   [3 1]
+    #   [1 3]
+    #   [4 2]
     board_size = board.length - 8
-    if player_index is 0
+    if player_index is 1
       [x, y] = [4, 4]
-    else if player_index is 1
-      [x, y] = [board_size + 3, board_size + 3]
     else if player_index is 2
+      [x, y] = [board_size + 3, board_size + 3]
+    else if player_index is 3
       [x, y] = [4, board_size + 3]
     else
       [x, y] = [board_size + 3, 4]
     r_ind = y - top
     c_ind = x - left
-    console.log x, y, r_ind, c_ind
     if r_ind < 0 or r_ind > 5 or c_ind < 0 or c_ind > 5 or rotated[r_ind][c_ind] == 0
       return false
     else
@@ -97,6 +113,12 @@ class Player
     @nr_moves = 0
     @index = index
     @pieces = (piece_to_matrix(piece, index) for piece in piece_numbers)
+
+  first_move: () ->
+    return @nr_moves == 0
+
+  add_move: () ->
+    @nr_moves++
 
 board = make_board(4,4)
 piece = piece_to_matrix(1, 1)
