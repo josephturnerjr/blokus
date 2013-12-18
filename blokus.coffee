@@ -57,30 +57,33 @@ class Game
     @players = (Player(p + 1) for p in [0...nr_players])
 
   make_move: (player_index, piece, rotation, top, left) ->
+    rotated = rotate_piece(piece, rotation)
     # Check that it is the player's turn
     if @current_turn == player_index
       player = @players[player_index - 1]
       # Check that player has piece available
       # Check that it is a valid move
-      if is_valid_move(player_index, piece, rotation, top, left, @board, player.first_move())
-        for i in [0...5]
-          for j in [0...5]
-            if rotated[i][j] != 0
-              board[top + i][left + j] == rotated[i][j]
+      if is_valid_move(player_index, rotated, top, left, @board, player.first_move())
+        add_piece_to_board(board, rotated, top, left)
         # Increment player moves
         player.add_move()
         # Increment turn counter
         @current_turn = (@current_turn) % 4 + 1
     return false
 
-is_valid_move= (player_index, piece, rotation, top, left, board, is_first_move=false) ->
-  rotated = rotate_piece(piece, rotation)
+add_piece_to_board = (board, piece, top, left) ->
+  for i in [0...5]
+    for j in [0...5]
+      if piece[i][j] != 0
+        board[top + i][left + j] = piece[i][j]
+
+is_valid_move = (player_index, piece, top, left, board, is_first_move=false) ->
   # Add the piece to board
   for i in [0...5]
     for j in [0...5]
       # Piece must not hit an existing piece
       # Piece must not overhang board edge
-      if rotated[i][j] != 0
+      if piece[i][j] != 0
         if board[top + i][left + j] != 0
           return false
   if is_first_move
@@ -99,14 +102,26 @@ is_valid_move= (player_index, piece, rotation, top, left, board, is_first_move=f
       [x, y] = [board_size + 3, 4]
     r_ind = y - top
     c_ind = x - left
-    if r_ind < 0 or r_ind > 5 or c_ind < 0 or c_ind > 5 or rotated[r_ind][c_ind] == 0
+    if r_ind < 0 or r_ind > 5 or c_ind < 0 or c_ind > 5 or piece[r_ind][c_ind] == 0
       return false
     else
       return true
   else
     # Piece must be in contact with a player piece on a corner
-    return true
-
+    corner_contact = false
+    for i in [0...5]
+      for j in [0...5]
+        if piece[i][j] != 0
+          # Player's pieces must not touch on their sides
+          for offset in [[-1, 0], [0, -1], [0, 1], [1, 0]]
+            if board[top + i + offset[0]][left + j + offset[1]] == player_index
+              return false
+          # Each piece must touch a player piece on a corner
+          for offset in [[-1, -1], [-1, 1], [1, -1], [1, 1]]
+            if board[top + i + offset[0]][left + j + offset[1]] == player_index
+              corner_contact = true
+    return corner_contact
+    
 
 class Player
   constructor: (index) ->
@@ -121,5 +136,16 @@ class Player
     @nr_moves++
 
 board = make_board(4,4)
+piece = piece_to_matrix(4291, 1)
+rotated = rotate_piece(piece, 2)
+console.log is_valid_move(1, rotated, 2,2, board, true)
+add_piece_to_board(board, rotated, 2, 2)
+console.log rotated
+console.log(board)
 piece = piece_to_matrix(1, 1)
-console.log is_valid_move(0, piece, 2, 0, 0, board, true)
+rotated = rotate_piece(piece, 2)
+console.log is_valid_move(1, rotated, 0, 1, board)
+console.log is_valid_move(1, rotated, 0, 2, board)
+add_piece_to_board(board, rotated, 0, 2)
+console.log rotated
+console.log(board)
