@@ -134,18 +134,3 @@ class Player
 
   add_move: () ->
     @nr_moves++
-
-board = make_board(4,4)
-piece = piece_to_matrix(4291, 1)
-rotated = rotate_piece(piece, 2)
-console.log is_valid_move(1, rotated, 2,2, board, true)
-add_piece_to_board(board, rotated, 2, 2)
-console.log rotated
-console.log(board)
-piece = piece_to_matrix(1, 1)
-rotated = rotate_piece(piece, 2)
-console.log is_valid_move(1, rotated, 0, 1, board)
-console.log is_valid_move(1, rotated, 0, 2, board)
-add_piece_to_board(board, rotated, 0, 2)
-console.log rotated
-console.log(board)
