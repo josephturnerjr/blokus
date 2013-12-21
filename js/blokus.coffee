@@ -48,28 +48,6 @@ rotate_piece = (piece, rotation) ->
             a[i][length - layer] = temp
   return a
 
-class Game
-  constructor: (nr_players, board_size) ->
-    @board_size = board_size
-    @nr_players = nr_players
-    @current_turn = 1
-    @board = make_board(board_size, board_size)
-    @players = (Player(p + 1) for p in [0...nr_players])
-
-  make_move: (player_index, piece, rotation, top, left) ->
-    rotated = rotate_piece(piece, rotation)
-    # Check that it is the player's turn
-    if @current_turn == player_index
-      player = @players[player_index - 1]
-      # Check that player has piece available
-      # Check that it is a valid move
-      if is_valid_move(player_index, rotated, top, left, @board, player.first_move())
-        add_piece_to_board(board, rotated, top, left)
-        # Increment player moves
-        player.add_move()
-        # Increment turn counter
-        @current_turn = (@current_turn) % 4 + 1
-    return false
 
 add_piece_to_board = (board, piece, top, left) ->
   for i in [0...5]
@@ -121,7 +99,35 @@ is_valid_move = (player_index, piece, top, left, board, is_first_move=false) ->
             if board[top + i + offset[0]][left + j + offset[1]] == player_index
               corner_contact = true
     return corner_contact
-    
+
+
+class Game
+  constructor: (nr_players, board_size) ->
+    @board_size = board_size
+    @nr_players = nr_players
+    @current_turn = 1
+    @board = make_board(board_size, board_size)
+    @players = (new Player(p + 1) for p in [0...nr_players])
+
+  make_move: (player_index, piece, rotation, top, left) ->
+    rotated = rotate_piece(piece, rotation)
+    # Check that it is the player's turn
+    if @current_turn == player_index
+      player = @players[player_index - 1]
+      # Check that player has piece available
+      # Check that it is a valid move
+      if is_valid_move(player_index, rotated, top, left, @board, player.first_move())
+        add_piece_to_board(board, rotated, top, left)
+        # Increment player moves
+        player.add_move()
+        # Increment turn counter
+        @current_turn = (@current_turn) % 4 + 1
+    return false
+  
+  get_current_player: () ->
+    console.log @current_turn, @players
+    return @players[@current_turn]
+
 
 class Player
   constructor: (index) ->
@@ -134,3 +140,5 @@ class Player
 
   add_move: () ->
     @nr_moves++
+
+window.BlokusGame = Game

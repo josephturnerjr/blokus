@@ -1,17 +1,27 @@
-<div class='board'></div>
+<html>
+<head>
+  <link href="/css/index.css" rel="stylesheet">
+  <link href="/css/bootstrap.css" rel="stylesheet">
+</head>
+<body>
+<div class='board clearfix'></div>
+<hr />
+<div class='pieces'></div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
 <script>window.jQuery || document.write('<script src="/static/js/vendor/jquery-1.8.2.min.js"><\/script>')</script>
-<script src="/blokus.js"></script>
-<script src="/blokus-board.js"></script>
+<script src="/js/blokus.js"></script>
+<script src="/js/blokus_board.js"></script>
 <script>
   $(document).ready(function(){
-    board = make_board(4,4);
-    piece = piece_to_matrix(4291, 1);
-    rotated = rotate_piece(piece, 2);
-    add_piece_to_board(board, rotated, 2, 2);
-    piece = piece_to_matrix(1, 1);
-    rotated = rotate_piece(piece, 2);
-    add_piece_to_board(board, rotated, 0, 2);
-    draw_board($('.board'), board);
+    var game = new BlokusGame(2, 14);
+    draw_board($('.board'), game.board);
+    var player = game.get_current_player();
+    for(var i = 0; i < player.pieces.length; i++){
+      var piece = player.pieces[i];
+      var el = $('<div class="piece">').appendTo('.pieces');
+      draw_piece(el, piece);
+    }
   });
 </script>
+</body>
+</html>
