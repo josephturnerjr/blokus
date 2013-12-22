@@ -4,7 +4,11 @@
   <link href="/css/bootstrap.css" rel="stylesheet">
 </head>
 <body>
-<div class='board clearfix'></div>
+<div class='board-holder'>
+  <div class='board clearfix'></div>
+  <div class='board-piece hide'></div>
+  <div class='indicator'></div>
+</div>
 <hr />
 <div class='pieces'></div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
@@ -12,15 +16,70 @@
 <script src="/js/blokus.js"></script>
 <script src="/js/blokus_board.js"></script>
 <script>
-  $(document).ready(function(){
-    var game = new BlokusGame(2, 14);
-    draw_board($('.board'), game.board);
-    var player = game.get_current_player();
+  var x = 0,
+      y = 0,
+      game = null,
+      piece_index = -1,
+      rotation = 0,
+      player = null;
+  var BOARD_SIZE = 14;
+  function draw_piece_on_board(){
+    var piece = player.pieces[piece_index];
+    $('.board-piece').show();
+    draw_piece($('.board-piece'), piece);
+    $('.board-piece').css({'top': (y * 20) + 'px', 'left': (x * 20) + 'px'});
+  }
+  function change_piece(){
+    piece_index = (piece_index + 1) % player.pieces.length;
+    x = 0;
+    y = 0;
+    rotation = 0;
+    draw_pieces();
+    draw_piece_on_board(); 
+  }
+  function draw_pieces(){
+    $('.pieces').html('');
     for(var i = 0; i < player.pieces.length; i++){
-      var piece = player.pieces[i];
+      var p = player.pieces[i];
       var el = $('<div class="piece">').appendTo('.pieces');
-      draw_piece(el, piece);
+      if(i == piece_index)
+        el.css({'border-color': 'red'});
+      draw_piece(el, p);
     }
+  }
+  function setup(){
+    piece_index = -1;
+    draw_board($('.board'), game.board);
+    player = game.get_current_player();
+    change_piece();
+  }
+  $(document).ready(function(){
+    game = new BlokusGame(2, BOARD_SIZE);
+    setup();
+    $(document).keydown(function(e){
+      console.log(e.which);
+      if(e.which == 38){
+        y = Math.max(0, y - 1);
+        draw_piece_on_board();
+      }else if(e.which == 40){
+        y = Math.min(BOARD_SIZE - 1 + 4, y + 1);
+        draw_piece_on_board();
+      }else if(e.which == 37){
+        x = Math.max(0, x - 1);
+        draw_piece_on_board();
+      }else if(e.which == 39){
+        x = Math.min(BOARD_SIZE - 1 + 4, x + 1);
+        draw_piece_on_board();
+      }else if(e.which == 78){
+        change_piece();
+      }else if(e.which == 13){
+        game.make_move(player.index, player.pieces[piece_index], rotation, y, x);
+        setup();
+      }
+      e.preventDefault();
+      $('.indicator').text(is_valid_move(player.index, player.pieces[piece_index], y, x, game.board, player.first_move())); 
+      return false;
+    });
   });
 </script>
 </body>

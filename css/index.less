@@ -1,9 +1,12 @@
 @piece-width: 20px;
 @board-size: 14;
-.board{
-  width: @piece-width * (@board-size + 8);
+.board-holder{
+  position: relative;
   margin-left: auto;
   margin-right: auto;
+}
+.board{
+  width: @piece-width * (@board-size + 8);
 }
 .board-square{
   width: @piece-width;
@@ -33,4 +36,8 @@
   float: left;
   border: 1px solid #ddd;
   margin: 10px;
+}
+.board-piece{
+  position: absolute;
+  width: @piece-width * 5;
 }

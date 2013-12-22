@@ -56,6 +56,7 @@ add_piece_to_board = (board, piece, top, left) ->
         board[top + i][left + j] = piece[i][j]
 
 is_valid_move = (player_index, piece, top, left, board, is_first_move=false) ->
+  #console.log(player_index, piece, top, left, board, is_first_move)
   # Add the piece to board
   for i in [0...5]
     for j in [0...5]
@@ -70,6 +71,7 @@ is_valid_move = (player_index, piece, top, left, board, is_first_move=false) ->
     #   [1 3]
     #   [4 2]
     board_size = board.length - 8
+    console.log(board_size)
     if player_index is 1
       [x, y] = [4, 4]
     else if player_index is 2
@@ -80,7 +82,8 @@ is_valid_move = (player_index, piece, top, left, board, is_first_move=false) ->
       [x, y] = [board_size + 3, 4]
     r_ind = y - top
     c_ind = x - left
-    if r_ind < 0 or r_ind > 5 or c_ind < 0 or c_ind > 5 or piece[r_ind][c_ind] == 0
+    console.log(x, y, r_ind, c_ind)
+    if r_ind < 0 or r_ind > 4 or c_ind < 0 or c_ind > 4 or piece[r_ind][c_ind] == 0
       return false
     else
       return true
@@ -117,16 +120,15 @@ class Game
       # Check that player has piece available
       # Check that it is a valid move
       if is_valid_move(player_index, rotated, top, left, @board, player.first_move())
-        add_piece_to_board(board, rotated, top, left)
+        add_piece_to_board(@board, rotated, top, left)
         # Increment player moves
         player.add_move()
         # Increment turn counter
-        @current_turn = (@current_turn) % 4 + 1
+        @current_turn = (@current_turn % @nr_players) + 1
     return false
   
   get_current_player: () ->
-    console.log @current_turn, @players
-    return @players[@current_turn]
+    return @players[@current_turn - 1]
 
 
 class Player
@@ -142,3 +144,4 @@ class Player
     @nr_moves++
 
 window.BlokusGame = Game
+window.is_valid_move = is_valid_move
