@@ -72,12 +72,20 @@
         draw_piece_on_board();
       }else if(e.which == 78){
         change_piece();
+      }else if(e.which == 82){
+        player.pieces[piece_index].rotate(1);
+        draw_piece_on_board();
+      }else if(e.which == 70){
+        player.pieces[piece_index].flip();
+        draw_piece_on_board();
       }else if(e.which == 13){
-        game.make_move(player.index, player.pieces[piece_index], rotation, y, x);
-        setup();
+        if(is_valid_move(player.index, player.pieces[piece_index], y, x, game.board, player.first_move())){
+          player.make_move(piece_index, rotation, y, x);
+          setup();
+        }
       }
-      e.preventDefault();
       $('.indicator').text(is_valid_move(player.index, player.pieces[piece_index], y, x, game.board, player.first_move())); 
+      e.preventDefault();
       return false;
     });
   });
