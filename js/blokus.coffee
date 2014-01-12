@@ -1,7 +1,113 @@
 valid_move = (piece, position, board) ->
   return true
 
-piece_numbers = [1, 3, 7, 35, 99, 15, 31, 47, 39, 143, 103, 1063, 167, 391, 195, 2119, 6211, 71, 2274, 2243, 4291]
+pieces = [
+ [[0, 0, 0, 0, 0]
+  [0, 0, 0, 0, 0]
+  [0, 0, 1, 0, 0]
+  [0, 0, 0, 0, 0]
+  [0, 0, 0, 0, 0]],
+ [[0, 0, 0, 0, 0]
+  [0, 0, 0, 0, 0]
+  [0, 0, 1, 1, 0]
+  [0, 0, 0, 0, 0]
+  [0, 0, 0, 0, 0]],
+ [[0, 0, 0, 0, 0]
+  [0, 0, 0, 0, 0]
+  [0, 1, 1, 1, 0]
+  [0, 0, 0, 0, 0]
+  [0, 0, 0, 0, 0]],
+ [[0, 0, 0, 0, 0]
+  [0, 0, 0, 0, 0]
+  [0, 0, 1, 1, 0]
+  [0, 0, 1, 0, 0]
+  [0, 0, 0, 0, 0]],
+ [[0, 0, 0, 0, 0]
+  [0, 0, 0, 0, 0]
+  [0, 0, 1, 1, 0]
+  [0, 0, 1, 1, 0]
+  [0, 0, 0, 0, 0]],
+ [[0, 0, 0, 0, 0]
+  [0, 0, 0, 0, 0]
+  [0, 1, 1, 1, 1]
+  [0, 0, 0, 0, 0]
+  [0, 0, 0, 0, 0]],
+ [[0, 0, 0, 0, 0]
+  [0, 0, 0, 0, 0]
+  [1, 1, 1, 1, 1]
+  [0, 0, 0, 0, 0]
+  [0, 0, 0, 0, 0]],
+ [[0, 0, 0, 0, 0]
+  [0, 0, 0, 0, 0]
+  [0, 1, 1, 1, 1]
+  [0, 1, 0, 0, 0]
+  [0, 0, 0, 0, 0]],
+ [[0, 0, 0, 0, 0]
+  [0, 0, 0, 0, 0]
+  [0, 1, 1, 1, 0]
+  [0, 1, 0, 0, 0]
+  [0, 0, 0, 0, 0]],
+ [[0, 0, 0, 0, 0]
+  [0, 0, 0, 0, 0]
+  [1, 1, 1, 1, 0]
+  [0, 0, 1, 0, 0]
+  [0, 0, 0, 0, 0]],
+ [[0, 0, 0, 0, 0]
+  [0, 0, 0, 0, 0]
+  [0, 1, 1, 1, 0]
+  [0, 1, 1, 0, 0]
+  [0, 0, 0, 0, 0]],
+ [[0, 0, 0, 0, 0]
+  [0, 1, 1, 1, 0]
+  [0, 1, 0, 0, 0]
+  [0, 1, 0, 0, 0]
+  [0, 0, 0, 0, 0]],
+ [[0, 0, 0, 0, 0]
+  [0, 0, 0, 0, 0]
+  [0, 1, 1, 1, 0]
+  [0, 1, 0, 1, 0]
+  [0, 0, 0, 0, 0]],
+ [[0, 0, 0, 0, 0]
+  [0, 0, 0, 0, 0]
+  [1, 1, 1, 0, 0]
+  [0, 0, 1, 1, 0]
+  [0, 0, 0, 0, 0]],
+ [[0, 0, 0, 0, 0]
+  [0, 1, 1, 0, 0]
+  [0, 0, 1, 1, 0]
+  [0, 0, 0, 0, 0]
+  [0, 0, 0, 0, 0]],
+ [[0, 0, 0, 0, 0]
+  [0, 1, 1, 1, 0]
+  [0, 0, 1, 0, 0]
+  [0, 0, 1, 0, 0]
+  [0, 0, 0, 0, 0]],
+ [[0, 0, 0, 0, 0]
+  [0, 1, 1, 0, 0]
+  [0, 0, 1, 0, 0]
+  [0, 0, 1, 1, 0]
+  [0, 0, 0, 0, 0]],
+ [[0, 0, 0, 0, 0]
+  [0, 0, 0, 0, 0]
+  [0, 1, 1, 1, 0]
+  [0, 0, 1, 0, 0]
+  [0, 0, 0, 0, 0]],
+ [[0, 0, 0, 0, 0]
+  [0, 0, 1, 0, 0]
+  [0, 1, 1, 1, 0]
+  [0, 0, 1, 0, 0]
+  [0, 0, 0, 0, 0]],
+ [[0, 0, 0, 0, 0]
+  [0, 1, 1, 0, 0]
+  [0, 0, 1, 1, 0]
+  [0, 0, 1, 0, 0]
+  [0, 0, 0, 0, 0]],
+ [[0, 0, 0, 0, 0]
+  [0, 1, 1, 0, 0]
+  [0, 0, 1, 1, 0]
+  [0, 0, 0, 1, 0]
+  [0, 0, 0, 0, 0]]
+]
 
 make_board = (width, height) ->
   arr = ((0 for i in [0...width + 8]) for j in [0...height + 8])
@@ -21,6 +127,16 @@ add_piece_to_board = (board, piece, top, left) ->
       if matrix[i][j] != 0
         board[top + i][left + j] = matrix[i][j]
 
+get_player_corner = (player_index, board_size) ->
+    if player_index is 1
+      return [4, 4]
+    else if player_index is 2
+      return [board_size + 3, board_size + 3]
+    else if player_index is 3
+      return [4, board_size + 3]
+    else
+      return [board_size + 3, 4]
+
 is_valid_move = (player_index, piece, top, left, board, is_first_move=false) ->
   matrix = piece.matrix 
   for i in [0...5]
@@ -36,15 +152,7 @@ is_valid_move = (player_index, piece, top, left, board, is_first_move=false) ->
     #   [1 3]
     #   [4 2]
     board_size = board.length - 8
-    console.log(board_size)
-    if player_index is 1
-      [x, y] = [4, 4]
-    else if player_index is 2
-      [x, y] = [board_size + 3, board_size + 3]
-    else if player_index is 3
-      [x, y] = [4, board_size + 3]
-    else
-      [x, y] = [board_size + 3, 4]
+    [x, y] = get_player_corner(player_index, board_size)
     r_ind = y - top
     c_ind = x - left
     console.log(x, y, r_ind, c_ind)
@@ -101,7 +209,7 @@ class Player
     @game = game
     @nr_moves = 0
     @index = index
-    @pieces = (new Piece(piece, @index) for piece in piece_numbers)
+    @pieces = (new Piece(piece, @index) for piece in pieces)
 
   first_move: () ->
     return @nr_moves == 0
@@ -116,8 +224,7 @@ class Player
     @nr_moves++
 
 class Piece
-  constructor: (piece_id, player_index) ->
-    console.log piece_id
+  constructor: (piece, player_index) ->
     arr = [
       [0, 0, 0, 0, 0] 
       [0, 0, 0, 0, 0] 
@@ -128,7 +235,7 @@ class Piece
     for i in [0...5]
       for j in [0...5]
         ind = i * 5 + j
-        arr[i][j] = player_index * ((piece_id & (1<<ind))>>ind)
+        arr[i][j] = player_index * piece[i][j]
     @matrix = arr
 
   rotate: (rotation) ->

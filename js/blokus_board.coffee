@@ -8,7 +8,6 @@ window.draw_board = (el, board) ->
 
 window.draw_piece = (el, piece) ->
   matrix = piece.matrix
-  console.log piece, matrix
   el.html('')
   for i in [0...5]
     for j in [0...5]
